@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Code, TrendingUp, TrendingDown, RotateCcw, CheckCircle, Sparkles, Zap, Trophy } from 'lucide-react';
+import { Send, Code, RotateCcw, CheckCircle } from 'lucide-react';
 
 const SYSTEM_PROMPT = `You are an Adaptive LeetCode Interviewer AI for an AI Interview Coach platform.
 Your job:
@@ -99,7 +99,7 @@ export default function InterviewCoach() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'YOUR_API_KEY', // User needs to add their API key
+          'x-api-key': 'YOUR_API_KEY',
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
@@ -149,7 +149,7 @@ export default function InterviewCoach() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'YOUR_API_KEY', // User needs to add their API key
+          'x-api-key': 'YOUR_API_KEY',
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
@@ -207,169 +207,91 @@ export default function InterviewCoach() {
     setStats({ correct: 0, streak: 0 });
   };
 
-  const getLevelGradient = (level: string) => {
+  const getLevelBg = (level: string) => {
     switch(level) {
-      case 'BEGINNER': return 'from-success via-success to-emerald-500';
-      case 'INTERMEDIATE': return 'from-warning via-warning to-amber-500';
-      case 'ADVANCED': return 'from-danger via-danger to-pink-500';
-      default: return 'from-primary via-primary to-accent';
-    }
-  };
-
-  const getLevelIcon = (level: string) => {
-    switch(level) {
-      case 'BEGINNER': return <Sparkles className="w-5 h-5" />;
-      case 'INTERMEDIATE': return <Code className="w-5 h-5" />;
-      case 'ADVANCED': return <Zap className="w-5 h-5" />;
-      default: return <Code className="w-5 h-5" />;
+      case 'BEGINNER': return 'bg-success';
+      case 'INTERMEDIATE': return 'bg-warning';
+      case 'ADVANCED': return 'bg-danger';
+      default: return 'bg-primary';
     }
   };
 
   if (!sessionStarted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Animated background gradient orbs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
-        </div>
-
-        <div className="w-full max-w-6xl relative z-10 animate-fade-in">
-          {/* Hero Section */}
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-primary blur-xl opacity-50 animate-glow-pulse" />
-                <Code className="w-16 h-16 text-primary relative z-10" />
-              </div>
-              <h1 className="text-6xl font-bold bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
-                AI Interview Coach
-              </h1>
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
+        <div className="w-full max-w-2xl">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Code className="w-10 h-10 text-primary" />
+              <h1 className="text-4xl font-bold text-foreground">Coding Interview Coach</h1>
             </div>
-            <p className="text-muted-foreground text-xl max-w-2xl mx-auto">
-              Master coding interviews with adaptive AI guidance that evolves with your performance
-            </p>
+            <p className="text-muted-foreground">Practice coding problems with AI feedback</p>
           </div>
 
-          {/* Level Selection Cards */}
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Beginner Card */}
-            <div 
-              onClick={() => startSession('BEGINNER')}
-              className="group relative bg-card-glass backdrop-blur-xl rounded-2xl p-8 border border-border hover:border-success transition-all duration-500 cursor-pointer overflow-hidden transform hover:scale-105 hover:shadow-elevated animate-fade-in"
-            >
-              <div className="absolute inset-0 bg-gradient-success opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
-              
-              <div className="relative z-10">
-                <div className="flex justify-center mb-6">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-success blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-500" />
-                    <div className="bg-gradient-success p-5 rounded-2xl relative">
-                      <Sparkles className="w-10 h-10 text-white" />
-                    </div>
+          <div className="bg-card border border-border rounded-lg p-8">
+            <label className="block text-sm font-medium text-foreground mb-4">
+              Select Difficulty Level
+            </label>
+            
+            <div className="space-y-4 mb-8">
+              <button
+                onClick={() => startSession('BEGINNER')}
+                className={`w-full text-left px-6 py-4 rounded-lg border-2 transition-all ${
+                  selectedLevel === 'BEGINNER'
+                    ? 'border-success bg-success/10'
+                    : 'border-border hover:border-success/50'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-foreground mb-1">Beginner</div>
+                    <div className="text-sm text-muted-foreground">Arrays, strings, basic algorithms</div>
                   </div>
+                  <div className="w-3 h-3 rounded-full bg-success" />
                 </div>
-                
-                <h3 className="text-3xl font-bold text-foreground text-center mb-4">Beginner</h3>
-                <p className="text-muted-foreground text-center mb-6 text-sm leading-relaxed">
-                  Perfect for starting out with fundamentals and building confidence
-                </p>
-                
-                <ul className="space-y-3 mb-8">
-                  {['Arrays & Strings', 'Basic Hashing', 'Two Pointers', 'Simple Recursion'].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-muted-foreground text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-success" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                
-                <button className="w-full bg-gradient-success text-white py-4 rounded-xl font-semibold hover:shadow-glow transition-all duration-300 group-hover:scale-105">
-                  Start Learning
-                </button>
-              </div>
+              </button>
+
+              <button
+                onClick={() => startSession('INTERMEDIATE')}
+                className={`w-full text-left px-6 py-4 rounded-lg border-2 transition-all ${
+                  selectedLevel === 'INTERMEDIATE'
+                    ? 'border-warning bg-warning/10'
+                    : 'border-border hover:border-warning/50'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-foreground mb-1">Intermediate</div>
+                    <div className="text-sm text-muted-foreground">Binary search, DP, stacks & queues</div>
+                  </div>
+                  <div className="w-3 h-3 rounded-full bg-warning" />
+                </div>
+              </button>
+
+              <button
+                onClick={() => startSession('ADVANCED')}
+                className={`w-full text-left px-6 py-4 rounded-lg border-2 transition-all ${
+                  selectedLevel === 'ADVANCED'
+                    ? 'border-danger bg-danger/10'
+                    : 'border-border hover:border-danger/50'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-foreground mb-1">Advanced</div>
+                    <div className="text-sm text-muted-foreground">Graph algorithms, advanced DP, complex trees</div>
+                  </div>
+                  <div className="w-3 h-3 rounded-full bg-danger" />
+                </div>
+              </button>
             </div>
 
-            {/* Intermediate Card */}
-            <div 
-              onClick={() => startSession('INTERMEDIATE')}
-              className="group relative bg-card-glass backdrop-blur-xl rounded-2xl p-8 border-2 border-warning hover:border-warning transition-all duration-500 cursor-pointer overflow-hidden transform hover:scale-105 hover:shadow-elevated animate-fade-in"
-              style={{ animationDelay: '0.1s' }}
-            >
-              <div className="absolute inset-0 bg-gradient-warning opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
-              
-              {/* Popular Badge */}
-              <div className="absolute top-4 right-4 bg-gradient-warning text-warning-foreground px-4 py-1 rounded-full text-xs font-bold">
-                POPULAR
+            {loading && (
+              <div className="text-center py-4">
+                <div className="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-muted-foreground mt-2">Starting session...</p>
               </div>
-              
-              <div className="relative z-10">
-                <div className="flex justify-center mb-6">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-warning blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-500" />
-                    <div className="bg-gradient-warning p-5 rounded-2xl relative">
-                      <Code className="w-10 h-10 text-white" />
-                    </div>
-                  </div>
-                </div>
-                
-                <h3 className="text-3xl font-bold text-foreground text-center mb-4">Intermediate</h3>
-                <p className="text-muted-foreground text-center mb-6 text-sm leading-relaxed">
-                  Build on your foundation with medium-level problem solving
-                </p>
-                
-                <ul className="space-y-3 mb-8">
-                  {['Binary Search', 'Basic DP', 'Stack & Queues', 'Hash Maps'].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-muted-foreground text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-warning" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                
-                <button className="w-full bg-gradient-warning text-warning-foreground py-4 rounded-xl font-semibold hover:shadow-glow transition-all duration-300 group-hover:scale-105">
-                  Start Advancing
-                </button>
-              </div>
-            </div>
-
-            {/* Advanced Card */}
-            <div 
-              onClick={() => startSession('ADVANCED')}
-              className="group relative bg-card-glass backdrop-blur-xl rounded-2xl p-8 border border-border hover:border-danger transition-all duration-500 cursor-pointer overflow-hidden transform hover:scale-105 hover:shadow-elevated animate-fade-in"
-              style={{ animationDelay: '0.2s' }}
-            >
-              <div className="absolute inset-0 bg-gradient-danger opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
-              
-              <div className="relative z-10">
-                <div className="flex justify-center mb-6">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-danger blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-500" />
-                    <div className="bg-gradient-danger p-5 rounded-2xl relative">
-                      <Zap className="w-10 h-10 text-white" />
-                    </div>
-                  </div>
-                </div>
-                
-                <h3 className="text-3xl font-bold text-foreground text-center mb-4">Advanced</h3>
-                <p className="text-muted-foreground text-center mb-6 text-sm leading-relaxed">
-                  Challenge yourself with hard problems and complex algorithms
-                </p>
-                
-                <ul className="space-y-3 mb-8">
-                  {['Advanced DP', 'Graph Algorithms', 'Backtracking', 'Complex Trees'].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-muted-foreground text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-danger" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                
-                <button className="w-full bg-gradient-danger text-white py-4 rounded-xl font-semibold hover:shadow-glow transition-all duration-300 group-hover:scale-105">
-                  Start Mastering
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -379,38 +301,30 @@ export default function InterviewCoach() {
   return (
     <div className="min-h-screen bg-background">
       <div className="w-full max-w-[1920px] mx-auto">
-        {/* Header */}
-        <header className="bg-card-glass backdrop-blur-xl border-b border-border sticky top-0 z-50">
+        <header className="bg-card border-b border-border">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-primary blur-lg opacity-50" />
-                  <Code className="w-8 h-8 text-primary relative z-10" />
-                </div>
+              <div className="flex items-center gap-3">
+                <Code className="w-7 h-7 text-primary" />
                 <div>
-                  <h1 className="text-2xl font-bold text-foreground">AI Interview Coach</h1>
-                  <p className="text-muted-foreground text-xs">Master coding interviews with adaptive AI</p>
+                  <h1 className="text-xl font-bold text-foreground">Coding Interview Coach</h1>
+                  <p className="text-muted-foreground text-xs">AI-powered practice</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-4">
-                <div className={`flex items-center gap-3 bg-gradient-to-r ${getLevelGradient(currentLevel)} px-6 py-3 rounded-xl shadow-glow`}>
-                  {getLevelIcon(currentLevel)}
-                  <span className="text-white font-bold tracking-wide">{currentLevel}</span>
+                <div className={`flex items-center gap-2 ${getLevelBg(currentLevel)} px-4 py-2 rounded-lg`}>
+                  <span className="text-white font-semibold text-sm">{currentLevel}</span>
                 </div>
                 
-                <div className="bg-card border border-border px-5 py-3 rounded-xl flex items-center gap-3">
-                  <Trophy className="w-5 h-5 text-primary" />
-                  <div className="text-sm">
-                    <span className="text-muted-foreground">Streak: </span>
-                    <span className="text-foreground font-bold text-lg">{stats.streak}</span>
-                  </div>
+                <div className="bg-card px-4 py-2 rounded-lg border border-border">
+                  <span className="text-muted-foreground text-xs">Streak: </span>
+                  <span className="text-foreground font-semibold text-sm">{stats.streak}</span>
                 </div>
                 
                 <button
                   onClick={resetSession}
-                  className="bg-muted text-foreground px-5 py-3 rounded-xl hover:bg-muted/80 transition-all flex items-center gap-2 font-medium"
+                  className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors flex items-center gap-2 text-sm"
                 >
                   <RotateCcw className="w-4 h-4" />
                   Reset
@@ -420,91 +334,70 @@ export default function InterviewCoach() {
           </div>
         </header>
 
-        {/* Main Content */}
-        <div className="grid lg:grid-cols-2 gap-0 h-[calc(100vh-89px)]">
-          {/* Question Panel */}
-          <div className="bg-card-glass backdrop-blur-xl border-r border-border p-8 overflow-hidden flex flex-col">
-            <div className="flex items-center gap-3 mb-6">
-              <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${getLevelGradient(currentLevel)} animate-pulse`} />
-              <h2 className="text-2xl font-bold text-foreground">Problem Statement</h2>
+        <div className="grid lg:grid-cols-2 gap-0">
+          <div className="bg-card border-r border-border p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className={`w-2 h-2 rounded-full ${getLevelBg(currentLevel)}`} />
+              <h2 className="text-lg font-semibold text-foreground">Problem</h2>
             </div>
             
-            <div className="bg-muted/30 backdrop-blur-sm rounded-2xl p-8 border border-border flex-1 overflow-y-auto">
+            <div className="bg-muted/30 border border-border rounded-lg p-4 h-[calc(100vh-200px)] overflow-y-auto">
               {loading && !question ? (
                 <div className="flex items-center justify-center h-full">
-                  <div className="flex gap-3">
-                    {[0, 1, 2].map((i) => (
-                      <div 
-                        key={i}
-                        className="w-4 h-4 bg-primary rounded-full animate-bounce"
-                        style={{ animationDelay: `${i * 150}ms` }}
-                      />
-                    ))}
-                  </div>
+                  <div className="inline-block w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : (
-                <div className="text-foreground whitespace-pre-wrap leading-relaxed font-mono text-sm">
+                <div className="text-foreground text-sm leading-relaxed whitespace-pre-wrap font-mono">
                   {question}
                 </div>
               )}
             </div>
           </div>
 
-          {/* Solution Panel */}
-          <div className="bg-card-glass backdrop-blur-xl p-8 overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">Your Solution</h2>
+          <div className="bg-card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-foreground">Solution</h2>
               <button
                 onClick={submitSolution}
                 disabled={loading || !solution.trim()}
-                className={`bg-gradient-to-r ${getLevelGradient(currentLevel)} text-white px-8 py-3 rounded-xl font-semibold hover:shadow-glow transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 disabled:hover:shadow-none`}
+                className={`${getLevelBg(currentLevel)} text-white px-5 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
               >
-                <Send className="w-5 h-5" />
-                Submit Solution
+                <Send className="w-4 h-4" />
+                Submit
               </button>
             </div>
 
             <textarea
               value={solution}
               onChange={(e) => setSolution(e.target.value)}
-              placeholder="// Write your solution here...
-// Explain your approach, provide code, or describe your algorithm
-
-function solution() {
-  // Your code
-}"
-              className="w-full h-80 bg-muted/30 backdrop-blur-sm text-foreground border border-border rounded-2xl p-6 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-sm resize-none mb-6 transition-all"
+              placeholder="Write your solution here..."
+              className="w-full h-64 bg-muted/30 border border-border text-foreground rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-sm resize-none mb-4"
               disabled={loading}
             />
 
-            {/* Feedback Section */}
-            <div className="bg-muted/30 backdrop-blur-sm rounded-2xl border border-border p-6 flex-1 overflow-y-auto">
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-3">
-                <CheckCircle className="w-6 h-6 text-success" />
-                Feedback History
-              </h3>
+            <div className="bg-muted/30 border border-border rounded-lg p-4 h-[calc(100vh-520px)] overflow-y-auto">
+              <div className="flex items-center gap-2 mb-3">
+                <CheckCircle className="w-4 h-4 text-success" />
+                <h3 className="text-sm font-semibold text-foreground">Feedback</h3>
+              </div>
               
               {feedback.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Send className="w-10 h-10 text-muted-foreground" />
-                  </div>
-                  <p className="text-muted-foreground">Submit your first solution to see feedback here</p>
-                </div>
+                <p className="text-muted-foreground text-sm text-center py-8">
+                  Submit a solution to see feedback here
+                </p>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {feedback.map((item, idx) => (
-                    <div 
-                      key={idx} 
-                      className="bg-card rounded-xl p-5 border border-border hover:border-primary/50 transition-all animate-fade-in"
-                    >
-                      <div className="text-xs text-muted-foreground mb-3 flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-primary" />
-                        {item.timestamp}
+                    <div key={idx} className="bg-card border border-border rounded-lg p-4">
+                      <div className="text-xs text-muted-foreground mb-2">{item.timestamp}</div>
+                      
+                      <div className="mb-3 p-3 bg-muted/50 rounded border-l-2 border-primary">
+                        <div className="text-xs text-muted-foreground mb-1">Your solution:</div>
+                        <div className="text-foreground text-xs whitespace-pre-wrap font-mono">
+                          {item.solution.length > 100 ? item.solution.substring(0, 100) + '...' : item.solution}
+                        </div>
                       </div>
-                      <div className="text-foreground/80 text-sm mb-4 p-4 bg-muted/50 rounded-lg border-l-4 border-primary font-mono">
-                        {item.solution.length > 150 ? item.solution.substring(0, 150) + '...' : item.solution}
-                      </div>
+                      
                       <div className="text-foreground text-sm whitespace-pre-wrap leading-relaxed">
                         {item.response}
                       </div>
